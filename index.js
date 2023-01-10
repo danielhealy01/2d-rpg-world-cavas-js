@@ -5,8 +5,53 @@ const c = canvas.getContext('2d');
 canvas.width = 1024;
 canvas.height = 576;
 
-c.fillStyle = 'white';
-c.fillRect(0, 0, canvas.width, canvas.height);
+// posiitons map / collision map
+const offset = {
+	x: -785,
+	y: -650,
+};
+
+const collisionsMap = [];
+for (let i = 0; i < collisions.length; i += 70) {
+	collisionsMap.push(collisions.slice(i, 70 + i));
+}
+
+console.log(collisionsMap);
+
+class Boundary {
+	static width = 48;
+	static height = 48;
+	// red squares from collision map are x4 from tiled's 12px
+	constructor({ position }) {
+		this.position = position;
+		this.width = 48;
+		this.height = 48;
+	}
+	draw() {
+		c.fillStyle = 'red';
+		c.fillRect(this.position.x, this.position.y, this.width, this.height);
+	}
+}
+
+const boundaries = [];
+
+collisionsMap.forEach((row, i) => {
+	row.forEach((symbol, j) => {
+		if (symbol === 1025) {
+			// 1025 is the json tiled value from collisions for a red collision tile.
+			boundaries.push(
+				new Boundary({
+					position: {
+						x: j * Boundary.width + offset.x,
+						y: i * Boundary.height + offset.y,
+					},
+				})
+			);
+		}
+	});
+});
+
+console.log(boundaries);
 
 const image = new Image();
 // generates <img />
@@ -28,8 +73,8 @@ class Sprite {
 
 const background = new Sprite({
 	position: {
-		x: -785,
-		y: -650,
+		x: offset.x,
+		y: offset.y,
 	},
 	image: image,
 });
@@ -53,6 +98,9 @@ const keys = {
 function animate() {
 	window.requestAnimationFrame(animate);
 	background.draw();
+	boundaries.forEach((boundary) => {
+		boundary.draw();
+	});
 	console.log('animate');
 	c.drawImage(
 		//src
