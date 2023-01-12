@@ -53,6 +53,14 @@ collisionsMap.forEach((row, i) => {
 
 console.log(boundaries);
 
+//test boundary to experiment with collision
+const testBoundary = new Boundary({
+  position: {
+    x: 400,
+    y: 400,
+  }
+})
+
 const image = new Image();
 // generates <img />
 image.src = './assets/Pellet Town.png';
@@ -94,13 +102,18 @@ const keys = {
 	},
 };
 
+//movable array +3 to everything that needs to appear locked when char moves
+const movables = [background, testBoundary]
+
+
 //animation loop - infintie recursion, repaints window at the display refresh rate
 function animate() {
 	window.requestAnimationFrame(animate);
 	background.draw();
-	boundaries.forEach((boundary) => {
-		boundary.draw();
-	});
+	// boundaries.forEach((boundary) => {
+	// 	boundary.draw();
+	// });
+  testBoundary.draw()
 	console.log('animate');
 	c.drawImage(
 		//src
@@ -125,10 +138,22 @@ function animate() {
 		playerImage.width / 4,
 		playerImage.height
 	);
-	if (keys.s.pressed && lastKey === 's') background.position.y -= 3;
-	else if (keys.w.pressed && lastKey === 'w') background.position.y += 3;
-	else if (keys.a.pressed && lastKey === 'a') background.position.x += 3;
-	else if (keys.d.pressed && lastKey === 'd') background.position.x -= 3;
+  if (keys.s.pressed && lastKey === 's') {
+    background.position.y -= 3
+    testBoundary.position.y -= 3;
+  };
+	if (keys.w.pressed && lastKey === 'w') {
+    background.position.y += 3
+    testBoundary.position.y += 3;
+  };
+	if (keys.a.pressed && lastKey === 'a') {
+    background.position.x += 3
+    testBoundary.position.x += 3;
+  };
+	if (keys.d.pressed && lastKey === 'd') {
+    background.position.x -= 3
+    testBoundary.position.x -= 3;
+  };
 }
 animate();
 
